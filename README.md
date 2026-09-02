@@ -96,20 +96,10 @@ TanStack Router conventions own route-state wiring:
 
 ---
 
-## Shared Governance
-
-| Area               | Tooling                                             |
-| ------------------ | --------------------------------------------------- |
-| Dependency updates | Renovate                                            |
-| Issue intake       | GitHub issue templates                              |
-| Change review      | Pull request template                               |
-| CI                 | GitHub Actions for lint, typecheck, test, and build |
-| Delivery           | Vercel deployment workflow                          |
-
 ## Security Headers
 
-`src/server.ts` applies the governed header baseline in the TanStack Start
-server entry. `vercel.json` applies the same deployment-owned baseline to static
+`src/server.ts` applies the default security headers in the TanStack Start
+server entry. `vercel.json` applies the same deployment headers to static
 assets: Content Security Policy, Cross-Origin-Opener-Policy, Permissions-Policy,
 Referrer-Policy, X-Content-Type-Options, and X-Frame-Options.
 
