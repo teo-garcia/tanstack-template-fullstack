@@ -52,15 +52,30 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Production smoke
+      - name: Start production server
         env:
           HOST: 127.0.0.1
-          PORT: 43117
+          PORT: "43117"
         run: |
-          test -f .output/server/index.mjs
-          pnpm start > /tmp/tanstack-production.log 2>&1 &
-          server_pid=$!
-          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
-          curl --fail --retry 15 --retry-connrefused --retry-delay 1 \
-            http://127.0.0.1:43117/api/health \
-            | node -e "let body=''; process.stdin.on('data', chunk => body += chunk); process.stdin.on('end', () => { if (JSON.parse(body).status !== 'ok') process.exit(1) })"
+          pnpm start > "$RUNNER_TEMP/web-conformance.log" 2>&1 &
+          echo "$!" > "$RUNNER_TEMP/web-conformance.pid"
+
+      - name: Shared web conformance
+        uses: teo-garcia/templates/conformance/web@a61b1980d9cbeef0e8bf3d255d7221ca25166810
+        with:
+          base_url: http://127.0.0.1:43117
+
+      - name: Upload conformance log
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: web-conformance-log
+          path: ${{ runner.temp }}/web-conformance.log
+          retention-days: 7
+
+      - name: Stop production server
+        if: always()
+        run: |
+          if [ -f "$RUNNER_TEMP/web-conformance.pid" ]; then
+            kill "$(cat "$RUNNER_TEMP/web-conformance.pid")" 2>/dev/null || true
+          fi
