@@ -77,7 +77,7 @@ function RootDocument({
             <HealthStatus />
           </GlobalProviders>
         </ThemeProvider>
-        <TanStackRouterDevtools position='top-left' />
+        <TanStackRouterDevtools position='bottom-left' />
         <Scripts />
       </body>
     </html>

@@ -11,7 +11,7 @@ export const GlobalProviders = (properties: React.PropsWithChildren) => {
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      <ReactQueryDevtools buttonPosition='bottom-left' />
+      <ReactQueryDevtools buttonPosition='bottom-right' />
     </QueryClientProvider>
   )
 }
