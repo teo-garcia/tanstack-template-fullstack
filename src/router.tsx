@@ -18,7 +18,11 @@ export function getRouter() {
     defaultErrorComponent: ({ error, reset }) => (
       <RouteState
         actions={<RouteStateButton onClick={reset}>Try again</RouteStateButton>}
-        description={error.message || 'The current route failed to render.'}
+        description={
+          error instanceof Error && error.message
+            ? error.message
+            : 'The current route failed to render.'
+        }
         title='Something went wrong'
         variant='error'
       />
