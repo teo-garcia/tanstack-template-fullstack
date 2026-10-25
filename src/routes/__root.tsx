@@ -1,5 +1,6 @@
 import {
   createRootRoute,
+  type ErrorComponentProps,
   HeadContent,
   Outlet,
   Scripts,
@@ -84,16 +85,19 @@ function RootDocument({
   )
 }
 
-function ErrorComponent({
-  error,
-  reset,
-}: Readonly<{ error: Error; reset: () => void }>) {
+function ErrorComponent({ error, reset }: Readonly<ErrorComponentProps>) {
   return (
     <RootDocument title={`${siteMetadata.shortName} | Something went wrong`}>
       <RouteState
         actions={<RouteStateButton onClick={reset}>Try again</RouteStateButton>}
-        description={error.message || 'The current route failed to render.'}
-        details={env.isDevelopment ? error.stack : undefined}
+        description={
+          error instanceof Error && error.message
+            ? error.message
+            : 'The current route failed to render.'
+        }
+        details={
+          env.isDevelopment && error instanceof Error ? error.stack : undefined
+        }
         title='Something went wrong'
         variant='error'
       />
